@@ -13,7 +13,10 @@ struct FCheckPoint
 
 public:
     UPROPERTY()
-    FTransform Transform;
+    TObjectPtr<USceneComponent> SpawnPointComponent;
+
+    UPROPERTY()
+    FTransform SpawnPointTransform;
 
     UPROPERTY()
     int Priority;
@@ -40,8 +43,11 @@ public:
     void RespawnAllPlayers();
 
     UFUNCTION(BlueprintCallable)
-    void UpdateCheckpoint(APlayerController* PlayerController, FTransform Transform, int Priority);
-    
+    void UpdateCheckpoint(APlayerController* PlayerController, USceneComponent* SpawnPoint, int Priority);
+  
+    UFUNCTION(BlueprintCallable)
+    void UpdateCheckpointTransform(APlayerController* PlayerController, FTransform SpawnPoint, int Priority);
+
 protected:
 
     UPROPERTY()

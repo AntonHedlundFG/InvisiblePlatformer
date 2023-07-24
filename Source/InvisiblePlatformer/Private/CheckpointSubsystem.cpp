@@ -28,18 +28,40 @@ void UCheckpointSubsystem::RespawnPlayer(APlayerController* PlayerController)
 	FCheckPoint* SpawnPoint = CurrentSpawnPoints.Find(PlayerController);
 	if (!SpawnPoint) return;
 	APawn* Pawn = PlayerController->GetPawn();
-	Pawn->SetActorLocation(SpawnPoint->Transform.GetLocation());
-	PlayerController->SetControlRotation(SpawnPoint->Transform.GetRotation().Rotator());
+
+	if (SpawnPoint->SpawnPointComponent)
+	{
+		Pawn->SetActorLocation(SpawnPoint->SpawnPointComponent->GetComponentLocation());
+		PlayerController->SetControlRotation(SpawnPoint->SpawnPointComponent->GetComponentRotation());
+	}
+	else
+	{
+		Pawn->SetActorLocation(SpawnPoint->SpawnPointTransform.GetLocation());
+		PlayerController->SetControlRotation(SpawnPoint->SpawnPointTransform.GetRotation().Rotator());
+	}
+
+	
 }
 
-void UCheckpointSubsystem::UpdateCheckpoint(APlayerController* PlayerController, FTransform Transform, int Priority)
+void UCheckpointSubsystem::UpdateCheckpoint(APlayerController* PlayerController, USceneComponent* SpawnPoint, int Priority)
 {
 	FCheckPoint* CurrentSpawnPoint = CurrentSpawnPoints.Find(PlayerController);
 	if (Priority < (CurrentSpawnPoint ? CurrentSpawnPoint->Priority : 0)) return;
 
 	FCheckPoint NewSpawnPoint;
 	NewSpawnPoint.Priority = Priority;
-	NewSpawnPoint.Transform = Transform;
+	NewSpawnPoint.SpawnPointComponent = SpawnPoint;
+	CurrentSpawnPoints.Add(PlayerController, NewSpawnPoint);
+}
+
+void UCheckpointSubsystem::UpdateCheckpointTransform(APlayerController* PlayerController, FTransform SpawnPoint, int Priority)
+{
+	FCheckPoint* CurrentSpawnPoint = CurrentSpawnPoints.Find(PlayerController);
+	if (Priority < (CurrentSpawnPoint ? CurrentSpawnPoint->Priority : 0)) return;
+
+	FCheckPoint NewSpawnPoint;
+	NewSpawnPoint.Priority = Priority;
+	NewSpawnPoint.SpawnPointTransform = SpawnPoint;
 	CurrentSpawnPoints.Add(PlayerController, NewSpawnPoint);
 }
 

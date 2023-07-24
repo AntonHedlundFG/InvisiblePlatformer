@@ -14,7 +14,7 @@ ACheckpointActor::ACheckpointActor()
 	PrimaryActorTick.bCanEverTick = true;
 
 	SpawnPoint = CreateDefaultSubobject<USceneComponent>(FName("SpawnPoint"));
-	SpawnPoint->SetupAttachment(RootComponent);
+	SetRootComponent(SpawnPoint);
 
 	CheckpointArea = CreateDefaultSubobject<UBoxComponent>(FName("CheckpointArea"));
 	CheckpointArea->SetupAttachment(RootComponent);
@@ -47,7 +47,7 @@ void ACheckpointActor::OverlapBegin(UPrimitiveComponent* OverlappedComponent, AA
 	if (!PC) return;
 	if (!GetCheckpointSystem()) return;
 
-	GetCheckpointSystem()->UpdateCheckpoint(PC, SpawnPoint->GetComponentTransform(), Priority);
+	GetCheckpointSystem()->UpdateCheckpoint(PC, SpawnPoint, Priority);
 }
 
 UCheckpointSubsystem* ACheckpointActor::GetCheckpointSystem()
