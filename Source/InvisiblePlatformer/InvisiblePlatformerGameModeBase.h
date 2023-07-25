@@ -13,5 +13,12 @@ UCLASS()
 class INVISIBLEPLATFORMER_API AInvisiblePlatformerGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
+
+public:
+	AActor* ChoosePlayerStart_Implementation(AController* Player) override;
 	
+protected:
+	UPROPERTY()
+	int NextPlayerNumberToSpawn = 1;
+
 };
